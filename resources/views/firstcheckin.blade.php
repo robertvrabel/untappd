@@ -25,7 +25,7 @@
                 <thead>
                     <tr>
                         <td>Beer Name:</td>
-                        <td>Checked In Date</td>
+                        <td>Checkin Date</td>
                         <td>Rating Score</td>
                         <td>Label Art</td>
                     </tr>

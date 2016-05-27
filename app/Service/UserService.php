@@ -54,10 +54,10 @@ class UserService
                 // Set the user
                 $user = collect($results['response'])->flatMap(function($item) {
                     // Use carbon to convert to eastern timezone
-                    $date = $this->carbon->createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s', strtotime($item['date_joined'])))->timezone('Pacific/Nauru')->setTimezone('America/Toronto');
+                    $date = $this->carbon->createFromFormat('Y-m-d g:i:s', date('Y-m-d g:i:s', strtotime($item['date_joined'])))->timezone('Pacific/Nauru')->setTimezone('America/Toronto');
 
                     // Change the signup date to be human readable
-                    $item['date_joined'] = date('F jS, Y h:i:sa', strtotime($date->toDateTimeString()));
+                    $item['date_joined'] = date('F jS, Y g:i:sa', strtotime($date->toDateTimeString()));
 
                     return $item;
                 });

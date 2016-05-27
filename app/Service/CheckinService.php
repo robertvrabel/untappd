@@ -56,10 +56,10 @@ class CheckinService
                 // Set the item
                 $beer = collect($results['response']['beers']['items'])->flatMap(function($item) {
                     // Use carbon to convert to eastern timezone
-                    $date = $this->carbon->createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s', strtotime($item['first_created_at'])))->timezone('Pacific/Nauru')->setTimezone('America/Toronto');
+                    $date = $this->carbon->createFromFormat('Y-m-d g:i:s', date('Y-m-d g:i:s', strtotime($item['first_created_at'])))->timezone('Pacific/Nauru')->setTimezone('America/Toronto');
 
                     // Change the date to human readable
-                    $item['first_created_at'] = date('F jS, Y h:i:sa', strtotime($date->toDateTimeString()));
+                    $item['first_created_at'] = date('F jS, Y g:i:sa', strtotime($date->toDateTimeString()));
 
                     return $item;
                 });
