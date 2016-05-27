@@ -2,8 +2,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
-use GuzzleHttp;
 use Illuminate\Support\Facades\Input;
+use App\Service\UserService;
+use App\Service\CheckinService;
 
 class FirstCheckinController extends Controller
 {
@@ -15,9 +16,10 @@ class FirstCheckinController extends Controller
      *
      * @param UserInfoController $user
      */
-    public function __construct(UserInfoController $user) {
-        
+    public function __construct(UserService $user, CheckinService $checkin) {
+
         $this->user = $user;
+        $this->checkin = $checkin;
     }
 
     /**
@@ -34,47 +36,8 @@ class FirstCheckinController extends Controller
         $user = $this->user->getUserInfo($username);
 
         // Get the first checkin
-        $beer = $this->getFirstCheckin($username);
+        $beer = $this->checkin->getFirstCheckin($username);
 
         return view('firstcheckin', compact('beer', 'user', 'username'));
-    }
-
-    public function getFirstCheckin($username)
-    {
-        // Beer to be returned
-        $beer = null;
-
-        // Make sure we have a username
-        if($username != null) {
-            // Build the query
-            $endpoint = 'https://api.untappd.com/v4';
-            $method = '/user/beers/' . $username;
-            $params = [
-                'client_id' => getenv('CLIENT_ID'),
-                'client_secret' => getenv('CLIENT_SECRET'),
-                'sort' => 'date_asc',
-                'limit' => 1,
-            ];
-
-            // Query for the results
-            $client = new GuzzleHttp\Client();
-            $res = $client->request('GET', $endpoint . $method, [
-                'query' => $params
-            ]);
-
-            // Get the results
-            $raw = $res->getBody();
-
-            // Decode the results
-            $results = json_decode($raw, true);
-
-            // Set the item
-            $beer = current($results['response']['beers']['items']);
-
-            // Change the date to human readable
-            $beer['first_created_at'] = date('F jS, Y h:i:sa', strtotime($beer['first_created_at']));
-        }
-
-        return $beer;
     }
 }
