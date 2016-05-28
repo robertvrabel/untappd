@@ -1,14 +1,12 @@
-<?php namespace App\Service;
+<?php namespace App\Http\Controllers;
 
 use Remic\GuzzleCache\Facades\GuzzleCache;
 use Carbon\Carbon;
 
-class CheckinService
+class UntappdUserController
 {
     /**
-     * CheckinService constructor.
-     *
-     * @param Carbon $carbon
+     * UntappdUserController constructor.
      */
     public function __construct(Carbon $carbon)
     {
@@ -16,25 +14,23 @@ class CheckinService
     }
 
     /**
-     * Get the users first checkin
+     * Get the users information
      *
-     * @param null $username
+     * @param $username
      * @return \Illuminate\Support\Collection|static
      */
-    public function getFirstCheckin($username = null)
+    public function getUserInfo($username = null)
     {
-        // Beer to be returned
-        $beer = collect();
+        // User to be returned
+        $user = collect();
 
-        // Make sure we have a username
         if($username != null) {
             // Build the query
             $endpoint = 'https://api.untappd.com/v4';
-            $method = '/user/beers/' . $username;
+            $method = '/user/info/' . $username;
             $params = [
                 'client_id' => getenv('CLIENT_ID'),
                 'client_secret' => getenv('CLIENT_SECRET'),
-                'sort' => 'date_asc',
                 'limit' => 1,
             ];
 
@@ -53,19 +49,19 @@ class CheckinService
                 // Get the results
                 $results = $response->json();
 
-                // Set the item
-                $beer = collect($results['response']['beers']['items'])->flatMap(function($item) {
+                // Set the user
+                $user = collect($results['response'])->flatMap(function($item) {
                     // Use carbon to convert to eastern timezone
-                    $date = $this->carbon->createFromFormat('Y-m-d g:i:s', date('Y-m-d g:i:s', strtotime($item['first_created_at'])))->timezone('Pacific/Nauru')->setTimezone('America/Toronto');
+                    $date = $this->carbon->createFromFormat('Y-m-d g:i:s', date('Y-m-d g:i:s', strtotime($item['date_joined'])))->timezone('Pacific/Nauru')->setTimezone('America/Toronto');
 
-                    // Change the date to human readable
-                    $item['first_created_at'] = date('F jS, Y g:i:sa', strtotime($date->toDateTimeString()));
+                    // Change the signup date to be human readable
+                    $item['date_joined'] = date('F jS, Y g:i:sa', strtotime($date->toDateTimeString()));
 
                     return $item;
                 });
             }
         }
 
-        return $beer;
+        return $user;
     }
 }
