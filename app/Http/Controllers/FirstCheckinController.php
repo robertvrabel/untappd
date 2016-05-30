@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Contracts\Repositories\UntappdUserRepositoryContract;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
 use App\Checkin;
@@ -9,7 +10,7 @@ use Carbon\Carbon;
 
 class FirstCheckinController extends Controller
 {
-    /** @var UntappdUserController */
+    /** @var UntappdUserRepositoryContract */
     protected $user;
 
     /** @var Checkin */
@@ -21,12 +22,11 @@ class FirstCheckinController extends Controller
     /**
      * FirstCheckinController constructor.
      *
-     * @param UntappdUserController $user
+     * @param UntappdUserContract $user
      * @param Checkin $checkin
      * @param Carbon $carbon
      */
-    public function __construct(UntappdUserController $user, Checkin $checkin, Carbon $carbon) {
-
+    public function __construct(UntappdUserRepositoryContract $user, Checkin $checkin, Carbon $carbon) {
         $this->user = $user;
         $this->checkin = $checkin;
         $this->carbon = $carbon;
@@ -43,7 +43,7 @@ class FirstCheckinController extends Controller
         $username = Input::get('username');
 
         // Get the users info
-        $user = $this->user->getUserInfo($username);
+        $user = $this->user->find($username);
 
         // Get the first checkin
         $beer = $this->getFirstCheckin($username);

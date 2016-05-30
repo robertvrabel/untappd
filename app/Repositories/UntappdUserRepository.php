@@ -1,12 +1,15 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Repositories;
 
 use Remic\GuzzleCache\Facades\GuzzleCache;
 use Carbon\Carbon;
+use App\Contracts\Repositories\UntappdUserRepositoryContract;
 
-class UntappdUserController
+class UntappdUserRepository implements UntappdUserRepositoryContract
 {
     /**
-     * UntappdUserController constructor.
+     * UntappdUserRepository constructor.
+     * 
+     * @param Carbon $carbon
      */
     public function __construct(Carbon $carbon)
     {
@@ -14,12 +17,12 @@ class UntappdUserController
     }
 
     /**
-     * Get the users information
+     * Find an untappd user
      *
-     * @param $username
+     * @param string $username
      * @return \Illuminate\Support\Collection|static
      */
-    public function getUserInfo($username = null)
+    public function find($username)
     {
         // User to be returned
         $user = collect();
