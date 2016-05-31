@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    @if(is_array($beer))
+    @if(is_object($beer) && isset($beer['beer']))
         <div class="report">
             <p><em>{{ $user['first_name'] }} {{ $user['last_name'] }}</em> signed up on <strong>{{ $user['date_joined'] }}</strong></p>
 
@@ -25,7 +25,7 @@
                 <thead>
                     <tr>
                         <td>Beer Name:</td>
-                        <td>Checked In Date</td>
+                        <td>Checkin Date</td>
                         <td>Rating Score</td>
                         <td>Label Art</td>
                     </tr>

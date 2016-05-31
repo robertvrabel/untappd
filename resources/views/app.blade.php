@@ -23,7 +23,7 @@
             <div class="top-bar-left">
                 <ul class="menu">
                     <li class="menu-text"><a href="/">Untappd Reports</a></li>
-                    <li><a href="/firstcheckin">First Checkin</a></li>
+                    <li><a href="{{ route('firstcheckin.index') }}">First Checkin</a></li>
                 </ul>
             </div>
         </div>

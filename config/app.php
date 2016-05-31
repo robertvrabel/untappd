@@ -157,6 +157,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        Remic\GuzzleCache\GuzzleCacheServiceProvider::class,
 
     ],
 
