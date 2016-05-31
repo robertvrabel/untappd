@@ -17,4 +17,4 @@ Route::get('/', function () {
 });
 
 // First checkin
-Route::get('firstcheckin/', 'FirstCheckinController@index');
+Route::get('first-checkin/', ['uses' => 'FirstCheckinController@index', 'as' => 'firstcheckin.index']);

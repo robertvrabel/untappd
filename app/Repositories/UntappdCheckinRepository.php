@@ -1,14 +1,17 @@
 <?php namespace App\Repositories;
 
+use App\Contracts\Repositories\UntappdCheckinRepositoryContract;
 use Remic\GuzzleCache\Facades\GuzzleCache;
 use Carbon\Carbon;
-use App\Contracts\Repositories\UntappdUserRepositoryContract;
 
-class UntappdUserRepository implements UntappdUserRepositoryContract
+class UntappdCheckinRepository implements UntappdCheckinRepositoryContract
 {
+    /** @var Carbon */
+    private $carbon;
+
     /**
-     * UntappdUserRepository constructor.
-     * 
+     * UntappdCheckinRepository constructor.
+     *
      * @param Carbon $carbon
      */
     public function __construct(Carbon $carbon)
@@ -17,23 +20,24 @@ class UntappdUserRepository implements UntappdUserRepositoryContract
     }
 
     /**
-     * Find an untappd user
-     *
-     * @param string $username
+     * @param $username
+     * @param $sort
+     * @param $limit
      * @return \Illuminate\Support\Collection|static
      */
-    public function find($username)
+    public function find($username, $sort, $limit)
     {
-        // User to be returned
-        $user = collect();
+        // Beer to be returned
+        $beer = collect();
 
         // Build the query
         $endpoint = 'https://api.untappd.com/v4';
-        $method = '/user/info/' . $username;
+        $method = '/user/beers/' . $username;
         $params = [
             'client_id' => getenv('CLIENT_ID'),
             'client_secret' => getenv('CLIENT_SECRET'),
-            'limit' => 1,
+            'sort' => $sort != null ? $sort : 'date_asc',
+            'limit' => $limit != null ? $limit : 1,
         ];
 
         // Query for the results
@@ -51,18 +55,18 @@ class UntappdUserRepository implements UntappdUserRepositoryContract
             // Get the results
             $results = $response->json();
 
-            // Set the user
-            $user = collect($results['response'])->flatMap(function($item) {
+            // Set the item
+            $beer = collect($results['response']['beers']['items'])->flatMap(function($item) {
                 // Use carbon to convert to eastern timezone
-                $date = $this->carbon->createFromFormat('Y-m-d g:i:s', date('Y-m-d g:i:s', strtotime($item['date_joined'])))->timezone('Pacific/Nauru')->setTimezone('America/Toronto');
+                $date = $this->carbon->createFromFormat('Y-m-d g:i:s', date('Y-m-d g:i:s', strtotime($item['first_created_at'])))->timezone('Pacific/Nauru')->setTimezone('America/Toronto');
 
-                // Change the signup date to be human readable
-                $item['date_joined'] = date('F jS, Y g:i:sa', strtotime($date->toDateTimeString()));
+                // Change the date to human readable
+                $item['first_created_at'] = date('F jS, Y g:i:sa', strtotime($date->toDateTimeString()));
 
                 return $item;
             });
         }
 
-        return $user;
+        return $beer;
     }
 }
