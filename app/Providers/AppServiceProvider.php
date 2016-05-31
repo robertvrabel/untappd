@@ -23,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // Register Contracts
+        $this->app->bind('App\Contracts\Repositories\UntappdUserRepositoryContract', 'App\Repositories\UntappdUserRepository');
+        $this->app->bind('App\Contracts\Repositories\UntappdCheckinRepositoryContract', 'App\Repositories\UntappdCheckinRepository');
     }
 }

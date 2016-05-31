@@ -1,35 +1,34 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Contracts\Repositories\UntappdUserRepositoryContract;
+use App\Contracts\Repositories\UntappdCheckinRepositoryContract;
 use App\Http\Requests;
+use App\Repositories\CheckinRepository;
 use Illuminate\Support\Facades\Input;
-use App\Checkin;
-use Remic\GuzzleCache\Facades\GuzzleCache;
-use Carbon\Carbon;
 
 class FirstCheckinController extends Controller
 {
-    /** @var UntappdUserController */
+    /** @var UntappdUserRepositoryContract */
     protected $user;
 
-    /** @var Checkin */
-    protected $checkin;
+    /** @var UntappdCheckinRepositoryContract */
+    protected $untappdCheckin;
 
-    /** @var Carbon */
-    protected $carbon;
+    /** @var CheckinRepository */
+    protected $checkin;
 
     /**
      * FirstCheckinController constructor.
      *
-     * @param UntappdUserController $user
-     * @param Checkin $checkin
-     * @param Carbon $carbon
+     * @param UntappdUserRepositoryContract $user
+     * @param UntappdCheckinRepositoryContract $untappdCheckin
+     * @param CheckinRepository $checkin
      */
-    public function __construct(UntappdUserController $user, Checkin $checkin, Carbon $carbon) {
-
+    public function __construct(UntappdUserRepositoryContract $user, UntappdCheckinRepositoryContract $untappdCheckin, CheckinRepository $checkin) {
         $this->user = $user;
+        $this->untappdCheckin = $untappdCheckin;
         $this->checkin = $checkin;
-        $this->carbon = $carbon;
     }
 
     /**
@@ -43,14 +42,14 @@ class FirstCheckinController extends Controller
         $username = Input::get('username');
 
         // Get the users info
-        $user = $this->user->getUserInfo($username);
+        $user = $this->user->find($username);
 
         // Get the first checkin
-        $beer = $this->getFirstCheckin($username);
+        $beer = $this->untappdCheckin->find($username, 'date_asc', 1);
 
         if(count($user) > 0 && count($beer) > 0) {
             // Check if this user is already in the database
-            $checked_in_user = $this->checkin->where('username', $user['user_name'])->first();
+            $checked_in_user = $this->checkin->find($user['user_name']);
 
             // Only store the user once in the database
             if(!isset($checked_in_user->id)) {
@@ -72,73 +71,11 @@ class FirstCheckinController extends Controller
     /**
      * Store a new checkin
      *
-     * @param null $checkin
-     * @return boolean
+     * @param array $data
+     * @return bool
      */
-    public function store($checkin = null)
+    public function store(array $data)
     {
-        // Validate the request
-        if($checkin != null) {
-            // Store it
-            $this->checkin->create($checkin);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Get the users first checkin
-     *
-     * @param null $username
-     * @return \Illuminate\Support\Collection|static
-     */
-    public function getFirstCheckin($username = null)
-    {
-        // Beer to be returned
-        $beer = collect();
-
-        // Make sure we have a username
-        if($username != null) {
-            // Build the query
-            $endpoint = 'https://api.untappd.com/v4';
-            $method = '/user/beers/' . $username;
-            $params = [
-                'client_id' => getenv('CLIENT_ID'),
-                'client_secret' => getenv('CLIENT_SECRET'),
-                'sort' => 'date_asc',
-                'limit' => 1,
-            ];
-
-            // Query for the results
-            $client = GuzzleCache::client();
-
-            $response = $client->get($endpoint . $method, [
-                'timeout' => 10,
-                'exceptions' => false,
-                'connect_timeout' => 10,
-                'query' => $params,
-            ]);
-
-            // If guzzle is successful
-            if($response->getStatusCode() == 200) {
-                // Get the results
-                $results = $response->json();
-
-                // Set the item
-                $beer = collect($results['response']['beers']['items'])->flatMap(function($item) {
-                    // Use carbon to convert to eastern timezone
-                    $date = $this->carbon->createFromFormat('Y-m-d g:i:s', date('Y-m-d g:i:s', strtotime($item['first_created_at'])))->timezone('Pacific/Nauru')->setTimezone('America/Toronto');
-
-                    // Change the date to human readable
-                    $item['first_created_at'] = date('F jS, Y g:i:sa', strtotime($date->toDateTimeString()));
-
-                    return $item;
-                });
-            }
-        }
-
-        return $beer;
+        return $this->checkin->create($data);
     }
 }
