@@ -31,8 +31,8 @@ class UntappdUserRepository implements UntappdUserRepositoryContract
         $endpoint = 'https://api.untappd.com/v4';
         $method = '/user/info/' . $username;
         $params = [
-            'client_id' => getenv('CLIENT_ID'),
-            'client_secret' => getenv('CLIENT_SECRET'),
+            'client_id' => getenv('UNTAPPD_CLIENT_ID'),
+            'client_secret' => getenv('UNTAPPD_CLIENT_SECRET'),
             'limit' => 1,
         ];
 
