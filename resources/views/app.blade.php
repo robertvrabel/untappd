@@ -26,29 +26,39 @@
     ga('send', 'pageview');
 
 </script>
-<div class="top-bar">
+<div class="page-wrap">
+    <div class="top-bar">
+        <div class="row">
+            <div class="small-12 columns">
+                <div class="top-bar-left">
+                    <ul class="menu">
+                        <li class="menu-text"><a href="/">Untappd Reports</a></li>
+                        <li><a href="{{ route('firstcheckin.index') }}">First Checkin</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="small-12 columns">
-            <div class="top-bar-left">
-                <ul class="menu">
-                    <li class="menu-text"><a href="/">Untappd Reports</a></li>
-                    <li><a href="{{ route('firstcheckin.index') }}">First Checkin</a></li>
-                </ul>
+            @include('flash::message')
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="row">
+            <div class="small-12 columns">
+                @yield('content')
             </div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="small-12 columns">
-        @include('flash::message')
-    </div>
-</div>
-
-<div class="content">
+<div class="footer">
     <div class="row">
-        <div class="small-12 columns">
-            @yield('content')
+        <div clas="small-12 columns">
+            Developed by <a href="mailto:rvrabel@gmail.com">Robert Vrabel</a> &copy; {{ date('Y') }}
         </div>
     </div>
 </div>

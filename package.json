@@ -1,5 +1,5 @@
 {
-  "version": "1.2.2",
+  "version": "1.2.3",
   "private": false,
   "devDependencies": {
     "gulp": "^3.9.1",
