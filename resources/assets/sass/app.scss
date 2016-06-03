@@ -20,7 +20,9 @@
 @include foundation-table;
 
 // Import partials
+@import "_partials/global";
 @import "_partials/content";
 @import "_partials/table";
 @import "_partials/menu";
 @import "_partials/report";
+@import "_partials/footer";
