@@ -6,9 +6,12 @@ use App\Contracts\Repositories\UntappdUserRepositoryContract;
 
 class UntappdUserRepository implements UntappdUserRepositoryContract
 {
+    /** @var Carbon */
+    private $carbon;
+
     /**
      * UntappdUserRepository constructor.
-     * 
+     *
      * @param Carbon $carbon
      */
     public function __construct(Carbon $carbon)

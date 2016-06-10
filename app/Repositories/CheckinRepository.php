@@ -5,9 +5,12 @@ use App\Contracts\Repositories\CheckinRepositoryContract;
 
 class CheckinRepository implements CheckinRepositoryContract
 {
+    /** @var Checkin */
+    protected $checkin;
+
     /**
      * CheckinRepository constructor.
-     * 
+     *
      * @param Checkin $checkin
      */
     public function __construct(Checkin $checkin)

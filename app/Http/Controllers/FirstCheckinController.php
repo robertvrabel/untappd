@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\Input;
 class FirstCheckinController extends Controller
 {
     /** @var UntappdUserRepositoryContract */
-    protected $user;
+    protected $untappdUserRepository;
 
     /** @var UntappdCheckinRepositoryContract */
-    protected $untappdCheckin;
+    protected $untappdCheckinRepository;
 
-    /** @var CheckinRepository */
-    protected $checkin;
+    /** @var CheckinRepositoryContract */
+    protected $checkinRepository;
 
     /**
      * FirstCheckinController constructor.
