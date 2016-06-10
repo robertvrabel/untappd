@@ -8,7 +8,7 @@ Interface CheckinRepositoryContract
      * @param $username
      * @return mixed
      */
-    public function find($username);
+    public function findBy($attribute, $value, array $columns);
 
     /**
      * Create a checkin record

@@ -5,9 +5,12 @@ use App\Contracts\Repositories\CheckinRepositoryContract;
 
 class CheckinRepository implements CheckinRepositoryContract
 {
+    /** @var Checkin */
+    protected $checkin;
+
     /**
      * CheckinRepository constructor.
-     * 
+     *
      * @param Checkin $checkin
      */
     public function __construct(Checkin $checkin)
@@ -16,14 +19,16 @@ class CheckinRepository implements CheckinRepositoryContract
     }
 
     /**
-     * Find the users checkin
+     * Find a record by a column
      *
-     * @param $username
-     * @return mixed
+     * @param $attribute
+     * @param $value
+     * @param array $columns
+     * @return
      */
-    public function find($username)
+    public function findBy($attribute, $value, array $columns = ['*'])
     {
-        return $this->checkin->where('username', $username)->first();
+        return $this->checkin->where($attribute, $value)->first($columns);
     }
 
     /**
