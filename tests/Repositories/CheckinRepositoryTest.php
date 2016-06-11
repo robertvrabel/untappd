@@ -10,7 +10,7 @@ class CheckinRepositoryTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @var Checkinepository */
+    /** @var CheckinRepository */
     protected $checkinRepository;
 
     public function setUp()
