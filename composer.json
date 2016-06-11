@@ -9,7 +9,7 @@
         "laravel/framework": "5.2.*",
         "guzzlehttp/guzzle": "^5.3",
         "laracasts/flash": "~2.0",
-        "laravelcollective/html": "~5.0",
+        "laravelcollective/html": "~5.2",
         "remic/guzzlecache": "~0.2"
     },
     "require-dev": {

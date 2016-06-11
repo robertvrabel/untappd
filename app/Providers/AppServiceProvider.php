@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -26,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
         // Register Contracts
         $this->app->bind('App\Contracts\Repositories\UntappdUserRepositoryContract', 'App\Repositories\UntappdUserRepository');
         $this->app->bind('App\Contracts\Repositories\UntappdCheckinRepositoryContract', 'App\Repositories\UntappdCheckinRepository');
+        $this->app->bind('App\Contracts\Repositories\CheckinRepositoryContract', 'App\Repositories\CheckinRepository');
     }
 }
